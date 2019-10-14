@@ -3,7 +3,7 @@
 #include <string>
 #include <bitset>
 #include <list>
-#include <vector>
+#include <cmath>
 
 using namespace std;
 
@@ -16,7 +16,7 @@ private:
   string _checksum;
   int _length;
   string _data;
-  bool _corrupted;
+  bool _corrupted = false;
   
 public:
   Packets();
@@ -36,35 +36,7 @@ public:
   string bitsToAddress(string);
   string addBinary(string, string);
   string onesComplement(string);
-};
-
-class Poem {
-private:
-  list<Packets> _poem;
-  string _address;
-  
-public:
-  Poem();
-  Poem(string);
-
-  string address();
-
-  void append(Packets);
-  void removeDuplicates();
-  void display(ofstream&);
-};
-
-class Book {
-private:
-  list<Poem> _book;
-  vector<string> _addresses;
-
-public:
-  Book();
-  Book(string);
-
-  void display(ofstream&);
-  bool checkAddress(string);
+  int toSignedInt(string);
 };
 
 Packets::Packets() {
@@ -109,12 +81,14 @@ void Packets::setDestination(string bits) {
 void Packets::setSequenceNum(string bits) {
   bitset<16> sequenceNum(bits);
   _sequenceNum = sequenceNum.to_ulong();
+
+  if(_sequenceNum > 10000)
+    _sequenceNum = toSignedInt(bits);
 }
 
 void Packets::setChecksum(string bits) {
   _checksum = bits;
-  string tempPacket = "";
-  tempPacket += _packet;
+  string tempPacket = _packet;
   tempPacket.replace(80, 16, "0000000000000000");
 
   string binaryOne = tempPacket.substr(0, 16);
@@ -129,8 +103,9 @@ void Packets::setChecksum(string bits) {
 
   binaryOne = onesComplement(binaryOne);
 
-  if(binaryOne != _checksum)
+  if(binaryOne != _checksum) {
     _corrupted = true;
+  }
 }
 
 void Packets::setLength(string bits) {
@@ -223,129 +198,13 @@ string Packets::address() {
   return _source + '/' + _destination;
 }
 
+int Packets::toSignedInt(string bits) {
+  bits = addBinary(onesComplement(bits), "0000000000000001");
+  bitset<16> b(bits);
+
+  return b.to_ulong();  
+}
+
 void Packets::display(ofstream& outputFile) {
   outputFile << _data << endl;
-}
-
-Poem::Poem() {
-  _poem.clear();
-  _address = "";
-}
-
-Poem::Poem(string address) {
-  _poem.clear();
-  _address = address;
-}
-
-void Poem::append(Packets p) {
-  list<Packets>::iterator it;
-
-  for (it = _poem.begin(); it != _poem.end(); ++it){
-    if(p.sequenceNum() < it->sequenceNum())
-      break;
-  }
-
-  _poem.insert(it, p);
-}
-
-void Poem::display(ofstream& outputFile) {
-  removeDuplicates();
-
-  list<Packets>::iterator it = _poem.begin();
-  list<Packets>::iterator prev = _poem.begin();
-
-  if(it->sequenceNum() != 0) {
-    outputFile << "[title missing]" << endl;
-  } else {
-    it->display(outputFile);
-    it++;
-  }
-
-  outputFile << it->address() << endl;
-
-  for ( ; it != _poem.end(); ++it){
-    int prevSequence = prev->sequenceNum();
-    int currentSequence = it->sequenceNum();
-
-    if(prevSequence != currentSequence - 1 && currentSequence - prevSequence < 100) {
-      for(int i = prevSequence; i < currentSequence; i++)
-        outputFile << "[line missing]" << endl;
-    }
-
-    if(it->length() == 0) {
-      if(currentSequence > 100)
-        it->display(outputFile);
-    } else
-      it->display(outputFile);
-
-    prev = it;
-  }
-}
-
-string Poem::address() {
-  return _address;
-}
-
-void Poem::removeDuplicates() {
-  for(list<Packets>::iterator i = _poem.begin(); i != _poem.end(); ++i) {
-    list<Packets>::iterator j = i;
-    j++;
-
-    for( ; j != _poem.end(); ++j) {
-      if(i->sequenceNum() == j->sequenceNum())
-        _poem.erase(j);
-    }
-  }
-}
-
-Book::Book() {
-  _book.clear();
-  _addresses.clear();
-}
-
-Book::Book(string bits) {
-  while(bits.length() > 0) {
-    int i = 0;
-
-    for(i = 0; bits[i] != '\n' && bits[i] != '\r'; i++);
-
-    Packets packet(bits.substr(0, i));
-
-    string address = packet.address();
-
-    if(checkAddress(address)) {
-      list<Poem>::iterator it;
-      for (it = _book.begin(); it != _book.end(); ++it){
-        if(it->address() == address)
-          break;
-      }
-      it->append(packet);
-    } else {
-      Poem *p = new Poem(address);
-      p->append(packet);
-      _book.push_back(*p);
-      _addresses.push_back(address);
-    }
-    
-    bits.erase(0, i + 1);
-  }
-}
-
-void Book::display(ofstream& outputFile) {
-  list<Poem>::iterator it;
-  for (it = _book.begin(); it != _book.end(); ){
-    it->display(outputFile);
-    if(++it != _book.end())
-      outputFile << "--------------------------------------------------------------------------------" << endl;
-      outputFile << endl;
-  }
-}
-
-bool Book::checkAddress(string address) {
-  int size = _addresses.size();
-  for (int i = 0; i < size; i++){
-    if(_addresses.at(i) == address)
-      return true;
-  }
-  return false;
 }
