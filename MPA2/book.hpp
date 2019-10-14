@@ -52,7 +52,6 @@ void Book::display(ofstream& outputFile) {
   for (it = _book.begin(); it != _book.end(); ){
     it->display(outputFile);
     if(++it != _book.end()) {
-      outputFile << endl;
       outputFile << "--------------------------------------------------------------------------------" << endl;
       outputFile << endl;
     }

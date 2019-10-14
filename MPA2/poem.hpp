@@ -62,9 +62,7 @@ void Poem::display(ofstream& outputFile) {
         outputFile << "[line missing]" << endl;
     }
 
-    if(it->length() != 0) {
-      it->display(outputFile);
-    }
+    it->display(outputFile);
     
     prev = it;
   }
