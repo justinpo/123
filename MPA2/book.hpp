@@ -25,9 +25,9 @@ Book::Book(string bits) {
 
     for(i = 0; bits[i] != '\n' && bits[i] != '\r'; i++);
 
-    Packets packet(bits.substr(0, i));
+    Packets *packet = new Packets(bits.substr(0, i));
 
-    string address = packet.address();
+    string address = packet->address();
 
     if(checkAddress(address)) {
       list<Poem>::iterator it;
@@ -35,10 +35,10 @@ Book::Book(string bits) {
         if(it->address() == address)
           break;
       }
-      it->append(packet);
+      it->append(*packet);
     } else {
       Poem *p = new Poem(address);
-      p->append(packet);
+      p->append(*packet);
       _book.push_back(*p);
       _addresses.push_back(address);
     }

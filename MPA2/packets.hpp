@@ -16,7 +16,7 @@ private:
   string _checksum;
   int _length;
   string _data;
-  bool _corrupted = false;
+  bool _corrupted;
   
 public:
   Packets();

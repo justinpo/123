@@ -16,7 +16,6 @@ public:
   void display(ofstream&);
 };
 
-
 Poem::Poem() {
   _poem.clear();
   _address = "";
