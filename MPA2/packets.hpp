@@ -52,6 +52,8 @@ Packets::Packets() {
 
 Packets::Packets(string bits) {
   _packet = bits;
+  _corrupted = false;
+  
   setSource(bits.substr(0, 32));
   bits.erase(0, 32);
   setDestination(bits.substr(0, 32));
