@@ -7,9 +7,9 @@ int main() {
 
 	cin >> filename;
 
-  ifstream file(filename);
+	ifstream file(filename);
 
-  if(file.is_open()){
+	if(file.is_open()){
 
 		while(getline(file, temp)) {
 			lines.append(temp);
