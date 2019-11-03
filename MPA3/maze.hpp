@@ -1,47 +1,96 @@
-// maze should represent the maze. 
-// The maze has a size, its dimension (number of rows and columns).  
-// The maze will simply be represented with a 2-dimensional array of squares, 
-// its size defined by its dimension. Notice that the size of the maze is variable. 
-// This means that the allocation of the 2d array should be dynamic.
-// Also, figure out the parameter list of the constructor. 
-// It should have a tostring operation that returns the maze as a string.
-
-#include "cell.hpp"
+#include "agenda.hpp"
 
 class Maze {
-private:
-  Cell **_cells;
-  int _dimension[2];
-
 public:
+  Cell **_cells;
+  int _rows;
+  int _columns;
+
   Maze();
-  Maze(int[][]);
-  string string();
-  void append(Cell);
-}
+  Maze(Maze*);
+  Maze(int, int);
+  Maze(const Maze&);
+  ~Maze();
+  void add(Cell, int, int);
+  Cell origin();
+  string str();
+};
 
 Maze::Maze() {
-  _dimension[2] = {0};
+  _rows = 0;
+  _columns = 0;
 }
 
-Maze::Maze(int dimension[2]) {
-  _dimension[0] = dimension[0];
-  _dimension[1] = dimension[1];
+Maze::Maze(int rows, int columns) {
+  _rows = rows;
+  _columns = columns;
+
+  _cells = new Cell*[_rows];
+    for(int i = 0; i < _rows; i++)
+      _cells[i] = new Cell[_columns];
 }
 
-string Maze::string() {
-  string mazeString;
+Maze::Maze(Maze *maze) {
+  _rows = maze->_rows;
+  _columns = maze->_columns;
 
-  for(int i = 0; i < _dimension[0]; i++) {
-    for(int j = 0; i < _dimension[1]; i++) {
-      mazeString += _cells[i][j].type;
+  _cells = new Cell*[_rows];
+  
+  for(int i = 0; i < _rows; i++){
+    _cells[i] = new Cell[_columns];
+  }
+
+  for(int i = 0; i < _rows; i++){
+      for(int j = 0; j < _columns; j++){
+        _cells[i][j] = maze->_cells[i][j];
+      }
+  }
+}
+
+Maze::Maze(const Maze& maze) {
+    _rows = maze._rows;
+    _columns = maze._columns;
+
+    for(int i = 0; i < _rows; i++){
+        for(int j = 0; j < _columns; j++){
+          _cells[i][j] = maze._cells[i][j];
+        }
     }
-    mazeString += "\n";
+}
+
+Maze::~Maze() {
+  for(int i = 0; i < _rows; i++) {
+      delete[] _cells[i];
+  }
+  delete[] _cells;
+}
+
+void Maze::add(Cell cell, int row, int column) {
+  // cout << cell._content << endl;
+  _cells[row][column] = cell;
+}
+
+Cell Maze::origin() {
+  for (int i = 0; i < _rows; i++) {
+    for (int j = 0; j < _columns; j++) {
+      if (_cells[i][j]._type == source) {
+        return _cells[i][j];
+      }
+    }
+  }
+
+  return _cells[0][0];
+}
+
+string Maze::str() {
+  string mazeString = "";
+
+  for(int i = 0; i < _rows; i++) {
+    for(int j = 0; j < _columns; j++) {
+      mazeString += _cells[i][j]._content;
+    }
+    mazeString += '\n';
   }
   
   return mazeString;
-}
-
-void Maze::append(Cell cell) {
-  
 }
