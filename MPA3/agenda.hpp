@@ -37,7 +37,6 @@ Agenda<T>::~Agenda() {
 
 template <class T>
 void Agenda<T>::add(Cell cell) {
-    // cout << "adding " << cell._content << " " << cell._row << " " << cell._col << endl;
     _adt->push(cell);
 }
 

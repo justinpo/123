@@ -11,8 +11,11 @@ public:
   Maze(int, int);
   Maze(const Maze&);
   ~Maze();
+
+  void fill(int, int);
   void add(Cell, int, int);
-  Cell origin();
+
+  Cell start();
   string str();
 };
 
@@ -22,23 +25,11 @@ Maze::Maze() {
 }
 
 Maze::Maze(int rows, int columns) {
-  _rows = rows;
-  _columns = columns;
-
-  _cells = new Cell*[_rows];
-    for(int i = 0; i < _rows; i++)
-      _cells[i] = new Cell[_columns];
+  fill(rows, columns);
 }
 
 Maze::Maze(Maze *maze) {
-  _rows = maze->_rows;
-  _columns = maze->_columns;
-
-  _cells = new Cell*[_rows];
-  
-  for(int i = 0; i < _rows; i++){
-    _cells[i] = new Cell[_columns];
-  }
+  fill(maze->_rows, maze->_columns);
 
   for(int i = 0; i < _rows; i++){
       for(int j = 0; j < _columns; j++){
@@ -65,12 +56,20 @@ Maze::~Maze() {
   delete[] _cells;
 }
 
+void Maze::fill(int rows, int columns) {
+  _rows = rows;
+  _columns = columns;
+
+  _cells = new Cell*[_rows];
+    for(int i = 0; i < _rows; i++)
+      _cells[i] = new Cell[_columns];
+}
+
 void Maze::add(Cell cell, int row, int column) {
-  // cout << cell._content << endl;
   _cells[row][column] = cell;
 }
 
-Cell Maze::origin() {
+Cell Maze::start() {
   for (int i = 0; i < _rows; i++) {
     for (int j = 0; j < _columns; j++) {
       if (_cells[i][j]._type == source) {

@@ -20,9 +20,16 @@ public:
   bool _visited;
 
   Cell();
+  Cell(Cell*);
   Cell(cellType, int, int);
   void determineContent();
+  void visit();
 };
+
+
+Cell::Cell() {
+  _visited = false;
+}
 
 Cell::Cell(cellType type, int row, int col) {
   _type = type;
@@ -32,8 +39,12 @@ Cell::Cell(cellType type, int row, int col) {
   _visited = false;
 }
 
-Cell::Cell() {
-  _visited = false;
+Cell::Cell(Cell *cell) {
+  _type = cell->_type;
+  _content = cell->_content;
+  _row = cell->_row;
+  _col = cell->_col;
+  _visited = cell->_visited;
 }
 
 void Cell::determineContent() {
@@ -56,4 +67,10 @@ void Cell::determineContent() {
     default:
       break;
   }
+}
+
+void Cell::visit() {
+  _visited = true;
+  _type = visited;
+  determineContent();
 }
