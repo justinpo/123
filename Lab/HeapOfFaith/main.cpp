@@ -45,7 +45,7 @@ Heap::Heap() {
 }
 
 void Heap::insert(int element) {
-    if(_size == 0) {
+    if(_size == 1) {
         _arr[_size] = element;
     }
     else {

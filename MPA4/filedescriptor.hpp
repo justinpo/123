@@ -18,19 +18,6 @@ public:
   string str();
 };
 
-class FileDescriptor {
-private:
-  fileType _type;
-  Date _dateCreated;
-  Date _dateModified;
-
-public:
-  FileDescriptor(fileType, Date);
-  string type();
-  string dateCreated();
-  void modify(Date);
-};
-
 Date::Date(int year, int month, int day) {
   _year = year;
   _month = month;
@@ -41,22 +28,40 @@ string Date::str() {
   return to_string(_day) + "/" + to_string(_month) + "/" + to_string(_year);
 }
 
-FileDescriptor::FileDescriptor(fileType type, Date dateCreated) {
+class FileDescriptor {
+private:
+  string _name;
+  string _content;
+  fileType _type;
+  Date _dateCreated;
+
+public:
+  FileDescriptor(string, fileType, Date);
+  fileType type();
+  string name();
+  string content();
+  string dateCreated();
+};
+
+FileDescriptor::FileDescriptor(string name, fileType type, Date dateCreated) {
+  _name = name;
+  _content = "";
   _type = type;
   _dateCreated = dateCreated;
 }
 
-string FileDescriptor::type() {
-  if(_type == file)
-    return "file";
-  else
-    return "directory";  
+fileType FileDescriptor::type() {
+  return _type;
+}
+
+string FileDescriptor::name() {
+  return _name;
+}
+
+string FileDescriptor::content() {
+  return _content;
 }
 
 string FileDescriptor::dateCreated() {
   return _dateCreated.str();
-}
-
-void FileDescriptor::modify(Date dateModified) {
-  _dateModified = dateModified;
 }

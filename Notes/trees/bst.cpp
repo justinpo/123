@@ -20,7 +20,7 @@ class bst{
 private:
 	bstnode *root;
 	void preorder(bstnode*);
-    void inorder(bstnode*);
+	void inorder(bstnode*);
 	int minimum(bstnode*);
 public:
 	bst(){root = NULL;}
@@ -135,24 +135,24 @@ bool bst::remove(int x){
 		return false;
 	else{
 		bstnode *del;
-        bstnode *parent = curr->parent;
+		bstnode *parent = curr->parent;
 		if(curr->left == NULL && curr->right==NULL){
-            del = curr;
+			del = curr;
 			del->parent = NULL;
-            if(child==1)
-                parent->right = NULL;
-            else
-            if(child==-1)
-                parent->left = NULL;
-            else
-            if(child==0)
-                root = NULL;
+			if(child==1)
+					parent->right = NULL;
+			else
+			if(child==-1)
+					parent->left = NULL;
+			else
+			if(child==0)
+					root = NULL;
 			delete del;             
             
 		}
 		else{            
 			del = curr;
-            if(curr->right == NULL){
+			if(curr->right == NULL){
 				bstnode *left = curr->left;				
 				left->parent = parent;
 				if(curr==root)
