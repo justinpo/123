@@ -1,0 +1,15 @@
+usage: mkdir <directory name>
+cmsc
+cmsc
+sp
+movies
+mkdir: sp: Already exists
+cmsc
+sp
+movies
+cmsc
+sp
+movies
+cd: cmsc11: No such file or directory
+cmsc11
+cmsc142
