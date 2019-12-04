@@ -1,4 +1,5 @@
 #include <string>
+#include <iostream>
 
 using namespace std;
 
@@ -20,6 +21,9 @@ public:
   fileType type();
   string name();
   string content();
+  void rename(string);
+  void writeContent(string);
+  void appendContent(string);
 };
 
 File::File() {
@@ -45,4 +49,16 @@ string File::name() {
 
 string File::content() {
   return _content;
+}
+
+void File::rename(string newName) {
+  _name = newName;
+}
+
+void File::writeContent(string content) {
+  _content += content;
+}
+
+void File::appendContent(string content) {
+  _content += content;
 }

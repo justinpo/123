@@ -9,7 +9,7 @@ private:
 public:
   Tree();
   Node* root();
-  void insert(string, fileType, Node*);
+  void insert(Node*, Node*);
   void remove(string);
   Node* getNode(string);
 };
@@ -22,9 +22,7 @@ Node* Tree::root() {
   return _root;
 }
 
-void Tree::insert(string name, fileType type, Node* parent) {
-  Node *n = new Node(name, type);
-
+void Tree::insert(Node *n, Node *parent) {
   n->_parent = parent;
 
   if(parent->_nextLevel == NULL) {

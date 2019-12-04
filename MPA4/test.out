@@ -13,3 +13,40 @@ movies
 cd: cmsc11: No such file or directory
 cmsc11
 cmsc142
+cmsc11
+cmsc142
+romcom
+cd: ../../movies/horror: No such file or directory
+cd: /root/movies/horror: No such file or directory
+cmsc
+sp
+movies
+usage: cp source_file/source_directory target_file/target_directory
+cmsc
+sp
+movies
+comsci1
+cmsc
+sp
+movies
+comsci1
+comsci2
+movies1
+movies2
+movie1
+move1
+cmsc11
+cmsc142
+sdfasfasfdsds
+sdfasfasfdsdsdsfasdfs
+hello.cpp
+hello.cpp
+one.cpp
+two.cpp
+one.cpp
+cmsc11
+cmsc142
+one.cpp
+cmsc11
+cmsc142
+newone.cpp
