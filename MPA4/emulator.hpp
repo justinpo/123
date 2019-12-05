@@ -1,5 +1,13 @@
 #include "tree.hpp"
 
+/*
+TODO:
+1) check if move file works
+2) implement whereis
+3) handle inputs that require * such as *.doc
+4) add more empty cases where we output the usage such as "usage: mkdir <directory name>"
+*/
+
 class Emulator {
 public:
   Tree _t;
@@ -9,10 +17,12 @@ public:
   ofstream _outputFile;
 
   Emulator();
+  // general functions
   Node* parentFolder(string);
   void goToDirectory(string);
   string tokenizeLocation(string);
   void handleCommand(string);
+  // command specific functions
   void makeDirectory();
   void changeDirectory();
   void copyFile();
@@ -21,6 +31,9 @@ public:
   void editFile();
   void renameFile();
   void showContent();
+  void moveFile();
+  void removeFile();
+  void findFile();
 };
 
 Emulator::Emulator() {
@@ -29,6 +42,7 @@ Emulator::Emulator() {
   _curr = _t.root();
 }
 
+// function that handles all the commands passed to the emulator
 void Emulator::handleCommand(string cmd) {
   _prev = _curr;
 
@@ -41,11 +55,12 @@ void Emulator::handleCommand(string cmd) {
     changeDirectory();
   } 
   else if(cmd.find("ls") != string::npos) {
-    _curr->display(_outputFile);
+    _name = "";
+    displayFiles();
   } 
   else if(cmd.find("rm ") != string::npos) {
     _name = cmd.substr(3);
-
+    removeFile();
   } 
   else if(cmd.find(">> ") != string::npos) {
     _name = cmd.substr(3);
@@ -69,11 +84,11 @@ void Emulator::handleCommand(string cmd) {
   } 
   else if(cmd.find("whereis ") != string::npos) {
     _name = cmd.substr(8);
-
+    findFile();
   }
   else if(cmd.find("mv ") != string::npos) {
     _name = cmd.substr(3);
-
+    moveFile();
   } 
   else if(cmd.find("cp ") != string::npos) {
     _name = cmd.substr(3);
@@ -90,17 +105,22 @@ void Emulator::handleCommand(string cmd) {
   }
 }
 
+// function that returns the parent folder of the given location
+// say /root/cmsc/assignments was the location, it would return
+// the node that points to cmsc
 Node* Emulator::parentFolder(string location) {
-
   Node *temp = _curr;
 
+  // checks if input is nested
   while(location.find("/") != string::npos) {
     size_t tok = location.find("/");
 
     string folder = location.substr(0, tok);
 
     if(folder == "..") {
-      temp = temp->_parent;
+      if(temp->_parent != NULL) {
+        temp = temp->_parent;
+      }
     } else {
       temp = temp->getNode(folder);
     }
@@ -111,22 +131,27 @@ Node* Emulator::parentFolder(string location) {
   return temp;
 }
 
+// function that changes _curr to the directory given,
+// say /root/cmsc/assignments was the location, it would change
+// _curr to assignments
 void Emulator::goToDirectory(string location) {
-
   string folder;
 
+  // checks if it starts from the root
   if(location.find("/root") != string::npos) {
     _curr = _t.root();
     location.erase(0, 6);
   }
-
+  // checks if input is nested
   while(location.find("/") != string::npos) {
     size_t tok = location.find("/");
 
     folder = location.substr(0, tok);
 
     if(folder == "..") {
-      _curr = _curr->_parent;
+      if(_curr->_parent != NULL) {
+        _curr = _curr->_parent;
+      }
     } else {
       _curr = _curr->getNode(folder);
     }
@@ -135,12 +160,17 @@ void Emulator::goToDirectory(string location) {
   }
 
   if(location == "..") {
-    _curr = _curr->_parent;
+    if(_curr->_parent != NULL) {
+      _curr = _curr->_parent;
+    }
   } else {
     _curr = _curr->getNode(location); 
   }
 }
 
+// function that tokenizes a location,
+// say /root/cmsc/assignments was the location, it would
+// return a string containing assignments
 string Emulator::tokenizeLocation(string location) {
   while(location.find("/") != string::npos) {
     size_t tok = location.find("/");
@@ -152,28 +182,35 @@ string Emulator::tokenizeLocation(string location) {
 }
 
 void Emulator::makeDirectory() {
-  // checks if directory already exists
-  if(_curr->getNode(_name) != NULL) {
-    _outputFile << "mkdir: " << _name <<": Already exists" << endl;
-  } 
-  
   // checks if input is nested
-  else if(_name.find("/") != string::npos) {
+  if(_name.find("/") != string::npos) {
     Node *temp = parentFolder(_name);
     _name = tokenizeLocation(_name);
-    Node *n = new Node(_name, directory);
-    _t.insert(n, temp);
+    // checks if directory already exists
+    if(temp->getNode(_name) != NULL) {
+      _outputFile << "mkdir: " << _name <<": Already exists" << endl;
+    } else {
+      Node *n = new Node(_name, directory);
+      _t.insert(n, temp);
+    }
   } 
   else {
-    Node *n = new Node(_name, directory);
-    _t.insert(n, _curr);
+    // checks if directory already exists
+    if(_curr->getNode(_name) != NULL) {
+      _outputFile << "mkdir: " << _name <<": Already exists" << endl;
+    } else {
+      Node *n = new Node(_name, directory);
+      _t.insert(n, _curr);
+    }
   }
 }
 
 void Emulator::changeDirectory() {
   // checks if input is nested
   if(_name == "..") {
-    _curr = _curr->_parent;
+    if(_curr->_parent != NULL) {
+      _curr = _curr->_parent;
+    }
   }
   else if(_name.find("/") != string::npos) {
     goToDirectory(_name);
@@ -197,12 +234,14 @@ void Emulator::copyFile() {
   Node *original = _curr->getNode(fileName);
   Node *n;
 
+  // checks if input is nested
   if(newFileName.find("/") != string::npos) {
     Node *temp = parentFolder(newFileName);
     newFileName = tokenizeLocation(newFileName);
     n = new Node(newFileName, original->_item.type());
     _t.insert(n, temp);
-  } else {
+  } 
+  else {
     n = new Node(newFileName, original->_item.type());
     _t.insert(n, _curr);
   }
@@ -224,30 +263,29 @@ void Emulator::createFile() {
   // if already exists
   if(_curr->getNode(_name) != NULL) {
     Node *n = _curr->getNode(_name);
+    n->_item.eraseContent();
     string content;
 
     while(true) {
-      cin >> content;
+      getline(cin, content);
 
       if(content == ":x")
         break;
 
-      n->_item.writeContent(content);
+      n->_item.writeContent(content + "\n");
     }
-
-    n->_item.writeContent(content);
   } 
   else {
     Node *n = new Node(_name, file);
     string content;
 
     while(true) {
-      cin >> content;
+      getline(cin, content);
 
       if(content == ":x")
         break;
 
-      n->_item.writeContent(content);
+      n->_item.writeContent(content + "\n");
     }
 
     _t.insert(n, _curr);
@@ -265,7 +303,7 @@ void Emulator::editFile() {
     if(content == ":x")
       break;
 
-    n->_item.appendContent(content);
+    n->_item.writeContent(content + "\n");
   }
 }
 
@@ -282,4 +320,68 @@ void Emulator::renameFile() {
   Node *n = _curr->getNode(fileName);
 
   n->_item.rename(newFileName);
+}
+
+void Emulator::moveFile() {
+  size_t tok = _name.find(" ");
+  string fileName = _name.substr(0, tok);
+  string newLocation = _name.substr(tok + 1);
+
+  cout << _curr->_parent->_item.name() << endl;
+
+  Node *file = _curr->getNode(fileName);
+  Node *temp = _curr;
+
+  if(newLocation.find("/") != string::npos) {
+    temp = parentFolder(newLocation);
+    newLocation = tokenizeLocation(newLocation);
+    temp = temp->getNode(newLocation);
+  }
+
+  if(temp == NULL) {
+    file->_item.rename(newLocation);
+  } 
+  else {
+    Node *parent = file->_parent;
+
+    cout << parent->_item.name() << endl;
+
+    if(parent->_nextLevel == file) {
+      parent->_nextLevel = file->_next;
+    }
+
+    file->_prev->_next = file->_next;
+    file->_next->_prev = file->_prev;
+    file->_parent = temp;
+
+    if(temp->_nextLevel == NULL) {
+      temp->_nextLevel = file;
+    } 
+    else {
+      Node *curr = temp->_nextLevel;
+      while(curr->_next != NULL) {
+        curr = curr->_next;
+      }
+      curr->_next = file;
+      file->_prev = curr;
+    }
+  }
+}
+
+void Emulator::removeFile() {  
+  Node *temp = _curr;
+
+  // checks if input is nested
+  if(_name.find("/") != string::npos) {
+    temp = parentFolder(_name);
+    _name = tokenizeLocation(_name);
+  }
+
+  if(temp->getNode(_name) != NULL) {
+    _t.remove(_name, temp);
+  }
+}
+
+void Emulator::findFile() {
+  // insert function here
 }

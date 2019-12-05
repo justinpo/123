@@ -10,7 +10,7 @@ public:
   Tree();
   Node* root();
   void insert(Node*, Node*);
-  void remove(string);
+  void remove(string, Node*);
   Node* getNode(string);
 };
 
@@ -60,4 +60,33 @@ Node* Tree::getNode(string name) {
   }
 
   return NULL;
+}
+
+void Tree::remove(string name, Node *parent) {
+  Node *curr = parent->getNode(name);
+
+  if(curr != NULL) {
+    Node *parent = curr->_parent;
+    if(parent->_nextLevel == curr) {
+      parent->_nextLevel = curr->_next;
+    }
+    curr->_prev->_next = curr->_next;
+    curr->_next->_prev = curr->_prev;
+    curr->_parent = NULL;
+  }
+
+  if(curr->_nextLevel != NULL) {
+    Node *nextLevel = curr->_nextLevel;
+
+    Node *current = curr;
+    Node *next = nextLevel->_next;
+    
+    while(curr != NULL) {
+      next = curr->_next;
+      delete curr;
+      curr = next;
+    }
+  }
+
+  delete curr;
 }

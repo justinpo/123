@@ -31,6 +31,8 @@ Node::Node(string name, fileType type) {
 	_parent = _next = _prev = NULL;
 }
 
+// functions nga wa ni gana pero basin mu gana
+
 // Node::Node(string name, Node *copy) {
 // 	_item = File(name, copy->_item.type());
 // 	_parent = copy->_parent;
@@ -50,7 +52,6 @@ Node::Node(string name, fileType type) {
 
 void Node::display(ofstream& outputFile) {
 	Node *curr = _nextLevel;
-	stack<string> s;
 
 	while(curr != NULL) {
 		outputFile << curr->_item.name() << endl;

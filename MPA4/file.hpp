@@ -22,8 +22,8 @@ public:
   string name();
   string content();
   void rename(string);
+  void eraseContent();
   void writeContent(string);
-  void appendContent(string);
 };
 
 File::File() {
@@ -55,10 +55,10 @@ void File::rename(string newName) {
   _name = newName;
 }
 
-void File::writeContent(string content) {
-  _content += content;
+void File::eraseContent() {
+  _content = "";
 }
 
-void File::appendContent(string content) {
+void File::writeContent(string content) {
   _content += content;
 }
