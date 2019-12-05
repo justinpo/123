@@ -327,8 +327,6 @@ void Emulator::moveFile() {
   string fileName = _name.substr(0, tok);
   string newLocation = _name.substr(tok + 1);
 
-  cout << _curr->_parent->_item.name() << endl;
-
   Node *file = _curr->getNode(fileName);
   Node *temp = _curr;
 
@@ -343,28 +341,29 @@ void Emulator::moveFile() {
   } 
   else {
     Node *parent = file->_parent;
-
-    cout << parent->_item.name() << endl;
-
-    if(parent->_nextLevel == file) {
-      parent->_nextLevel = file->_next;
-    }
-
-    file->_prev->_next = file->_next;
-    file->_next->_prev = file->_prev;
+    parent->_children.remove(file);
     file->_parent = temp;
+    temp->_children.push_back(file);
 
-    if(temp->_nextLevel == NULL) {
-      temp->_nextLevel = file;
-    } 
-    else {
-      Node *curr = temp->_nextLevel;
-      while(curr->_next != NULL) {
-        curr = curr->_next;
-      }
-      curr->_next = file;
-      file->_prev = curr;
-    }
+    // if(parent->_nextLevel == file) {
+    //   parent->_nextLevel = file->_next;
+    // }
+
+    // file->_prev->_next = file->_next;
+    // file->_next->_prev = file->_prev;
+    // file->_parent = temp;
+
+    // if(temp->_nextLevel == NULL) {
+    //   temp->_nextLevel = file;
+    // } 
+    // else {
+    //   Node *curr = temp->_nextLevel;
+    //   while(curr->_next != NULL) {
+    //     curr = curr->_next;
+    //   }
+    //   curr->_next = file;
+    //   file->_prev = curr;
+    // }
   }
 }
 
