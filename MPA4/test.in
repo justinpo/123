@@ -49,6 +49,10 @@ show hello.cpp
 >> hello.cpp
 show hello.cpp
 ls
+edit hello.cpp
+show hello.cpp
+> hello.cpp
+show hello.cpp
 cp hello.cpp one.cpp
 cp hello.cpp two.cpp
 cp hello.cpp ../one.cpp
@@ -58,3 +62,11 @@ cd ..
 ls
 rn one.cpp newone.cpp
 ls
+cd ..
+ls
+mv cmsc comsci
+ls
+cd comsci
+ls
+cd ..
+cd cmsc

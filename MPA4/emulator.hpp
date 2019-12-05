@@ -2,8 +2,7 @@
 
 /*
 TODO:
-1) check if move file works
-2) implement whereis
+1) implement whereis
 3) handle inputs that require * such as *.doc
 4) add more empty cases where we output the usage such as "usage: mkdir <directory name>"
 */
@@ -71,7 +70,7 @@ void Emulator::handleCommand(string cmd) {
     createFile();
   } 
   else if(cmd.find("edit ") != string::npos) {
-    _name = cmd.substr(3);
+    _name = cmd.substr(5);
     editFile();
   } 
   else if(cmd.find("rn ") != string::npos) {
@@ -298,7 +297,7 @@ void Emulator::editFile() {
   string content;
 
   while(true) {
-    cin >> content;
+    getline(cin, content);
 
     if(content == ":x")
       break;
@@ -333,37 +332,17 @@ void Emulator::moveFile() {
   if(newLocation.find("/") != string::npos) {
     temp = parentFolder(newLocation);
     newLocation = tokenizeLocation(newLocation);
-    temp = temp->getNode(newLocation);
   }
+
+  temp = temp->getNode(newLocation);
 
   if(temp == NULL) {
     file->_item.rename(newLocation);
+    return;
   } 
   else {
-    Node *parent = file->_parent;
-    parent->_children.remove(file);
-    file->_parent = temp;
-    temp->_children.push_back(file);
-
-    // if(parent->_nextLevel == file) {
-    //   parent->_nextLevel = file->_next;
-    // }
-
-    // file->_prev->_next = file->_next;
-    // file->_next->_prev = file->_prev;
-    // file->_parent = temp;
-
-    // if(temp->_nextLevel == NULL) {
-    //   temp->_nextLevel = file;
-    // } 
-    // else {
-    //   Node *curr = temp->_nextLevel;
-    //   while(curr->_next != NULL) {
-    //     curr = curr->_next;
-    //   }
-    //   curr->_next = file;
-    //   file->_prev = curr;
-    // }
+    _t.insert(file, temp);
+    _t.remove(file->_item.name(), temp);
   }
 }
 
