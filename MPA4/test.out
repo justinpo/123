@@ -35,23 +35,89 @@ movies1
 movies2
 movie1
 move1
+cmsc
+sp
+movies
+comsci1
+comsci2
+movies1
+movies2
+cmsc
+sp
+movies
+comsci1
+comsci2
+movies1
+movies2
+cmsc
+sp
+movies
+comsci1
+comsci2
+movies1
+movies2
+movie1
+move1
+comsci1
+movies1
+movie1
+move1
+cmsc
+sp
+movies
+comsci1
+comsci2
+movies1
+movies2
+movie1
+move1
+movies
+movies1
+movies2
+move1
+movies
+movies1
+movies2
+movie1
+move1
 cmsc11
 cmsc142
-asfdasdsffsda
-:X
+#include <iostream>
 
-asfdasdsffsda
-:X
-dsfdsafd
+using namespace std;
 
+int main(){
+        cout<<"Hello World!\n"<<endl;
+        return 0;
+}
+#include <iostream>
+
+using namespace std;
+
+int main(){
+        cout<<"Hello World!\n"<<endl;
+        return 0;
+}
+//this is a test for the append using >>
 hello.cpp
-asfdasdsffsda
-:X
-dsfdsafd
-sdfadsaf
+#include <iostream>
 
-sadfdsf
+using namespace std;
 
+int main(){
+        cout<<"Hello World!\n"<<endl;
+        return 0;
+}
+//this is a test for the append using >>
+//this is the result of editing the file using edit
+#include <iostream>
+
+using namespace std;
+
+int main(){
+        cout<<"Hello Philippines and hello world!\n";
+        return 0;
+}
 hello.cpp
 one.cpp
 two.cpp

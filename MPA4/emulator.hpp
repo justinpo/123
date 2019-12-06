@@ -1,12 +1,5 @@
 #include "tree.hpp"
 
-/*
-TODO:
-1) implement whereis
-3) handle inputs that require * such as *.doc
-4) add more empty cases where we output the usage such as "usage: mkdir <directory name>"
-*/
-
 class Emulator {
 public:
   Tree _t;
@@ -53,12 +46,20 @@ void Emulator::handleCommand(string cmd) {
     _name = cmd.substr(3);
     changeDirectory();
   } 
+  else if(cmd.find("ls ") != string::npos) {
+    _name = cmd.substr(3);
+    displayFiles();
+  }
   else if(cmd.find("ls") != string::npos) {
     _name = "";
     displayFiles();
   } 
   else if(cmd.find("rm ") != string::npos) {
     _name = cmd.substr(3);
+    removeFile();
+  } 
+  else if(cmd.find("rmdir ") != string::npos) {
+    _name = cmd.substr(6);
     removeFile();
   } 
   else if(cmd.find(">> ") != string::npos) {
@@ -98,6 +99,24 @@ void Emulator::handleCommand(string cmd) {
   }
   else if(cmd == "cp") {
     _outputFile << "usage: cp source_file/source_directory target_file/target_directory" << endl;
+  }
+  else if(cmd == "rm") {
+    _outputFile << "usage: rm <filename>" << endl;
+  }
+  else if(cmd == "rn") {
+    _outputFile << "usage: rn <filename> <new filename>" << endl;
+  }
+  else if(cmd == "whereis") {
+    _outputFile << "usage: whereis <filename/directory>" << endl;
+  }
+  else if(cmd == "rmdir") {
+    _outputFile << "usage: rmdir <directory name>" << endl;
+  }
+  else if(cmd == "edit") {
+    _outputFile << "usage: edit <filename>" << endl;
+  }
+  else if(cmd == "show") {
+    _outputFile << "usage: show <filename>" << endl;
   }
   else {
     _outputFile << "Invalid command" << endl;
@@ -254,8 +273,12 @@ void Emulator::displayFiles() {
   if(_name.find("/") != string::npos) {
     changeDirectory();
   }
-
-  _curr->display(_outputFile);
+  if(_name.find("*") != string::npos) {
+    string filter = tokenizeLocation(_name);
+    _curr->filteredDisplay(_outputFile, filter);
+  } else {
+    _curr->display(_outputFile);
+  }
 }
 
 void Emulator::createFile() {
@@ -308,7 +331,7 @@ void Emulator::editFile() {
 
 void Emulator::showContent() {
   Node *n = _curr->getNode(_name);
-  _outputFile << n->_item.content() << endl;
+  _outputFile << n->_item.content();
 }
 
 void Emulator::renameFile() {
@@ -355,11 +378,14 @@ void Emulator::removeFile() {
     _name = tokenizeLocation(_name);
   }
 
-  if(temp->getNode(_name) != NULL) {
+  if(_name.find("*")) {
+    _t.filteredRemove(_name, temp);
+  } else if(temp->getNode(_name) != NULL) {
     _t.remove(_name, temp);
   }
+  
 }
 
 void Emulator::findFile() {
-  // insert function here
+  return;
 }

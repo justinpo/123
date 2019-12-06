@@ -15,6 +15,7 @@ public:
 	Node();
 	Node(string, fileType);
   void display(ofstream&);
+	void filteredDisplay(ofstream&, string);
 	Node* getNode(string);
 };
 
@@ -30,6 +31,34 @@ Node::Node(string name, fileType type) {
 void Node::display(ofstream& outputFile) {
 	for(auto i : _children) {
 		outputFile << i->_item.name() << endl;
+	}
+}
+
+void Node::filteredDisplay(ofstream& outputFile, string filter) {
+	for(auto i : _children) {
+		if(filter[0] == '*' && filter[filter.length() - 1] == '*') {
+			string tempFilter = filter.substr(1, filter.length() - 2);
+			string filename = i->_item.name();
+			if(filename.find(tempFilter) != string::npos) {
+				outputFile << filename << endl;
+			}
+		} else if(filter[0] == '*') {
+			string filename = i->_item.name();
+			string tempFilter = filter.substr(1, filter.length() - 1);
+			if(filename.find(tempFilter) != string::npos) {
+				if(filename.substr(filename.find(tempFilter), tempFilter.length()) == tempFilter) {
+					outputFile << filename << endl;
+				}
+			}
+		} else if(filter[filter.length() - 1] == '*') {
+			string filename = i->_item.name();
+			string tempFilter = filter.substr(0, filter.length() - 1);
+			if(filename.find(tempFilter) != string::npos) {
+				if(filename.substr(0, tempFilter.length()) == tempFilter) {
+					outputFile << filename << endl;
+				}
+			}
+		}
 	}
 }
 

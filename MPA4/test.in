@@ -40,6 +40,15 @@ cp movies movies2
 cp movies movie1
 cp movies move1
 ls
+ls *s*
+ls *s*
+ls
+ls *.*
+ls *1
+ls
+ls movies*
+ls move*
+ls *v*
 cd cmsc
 ls
 cd cmsc11
