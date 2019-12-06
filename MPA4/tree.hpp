@@ -43,7 +43,8 @@ void Tree::filteredRemove(string filter, Node *parent) {
 			string tempFilter = filter.substr(1, filter.length() - 2);
 			string filename = i->_item.name();
 			if(filename.find(tempFilter) != string::npos) {
-				parent->_children.remove(i);
+        if(filename.find(tempFilter) != 0)
+				  parent->_children.remove(i);
 			}
 		} else if(filter[0] == '*') {
 			string filename = i->_item.name();
