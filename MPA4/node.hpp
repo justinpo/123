@@ -3,6 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <stack>
+#include <queue>
 
 using namespace std;
 
@@ -40,7 +41,8 @@ void Node::filteredDisplay(ofstream& outputFile, string filter) {
 			string tempFilter = filter.substr(1, filter.length() - 2);
 			string filename = i->_item.name();
 			if(filename.find(tempFilter) != string::npos) {
-				outputFile << filename << endl;
+				if(filename.find(tempFilter) != 0)
+					outputFile << filename << endl;
 			}
 		} else if(filter[0] == '*') {
 			string filename = i->_item.name();

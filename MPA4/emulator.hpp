@@ -387,5 +387,41 @@ void Emulator::removeFile() {
 }
 
 void Emulator::findFile() {
-  return;
+  Node *curr = _t.root();
+  stack<Node*> s, results;
+  s.push(curr);
+
+  while(!s.empty()) {
+    curr = s.top();
+    s.pop();
+
+    if(curr->_item.name() == _name) {
+      results.push(curr);
+    }
+
+    if(!curr->_children.empty()) {
+      for(auto i : curr->_children) {
+        s.push(i);
+      }
+    }
+  }
+
+  while(!results.empty()) {
+    stack<string> path;
+
+    curr = results.top();
+    results.pop();
+    path.push(curr->_item.name());
+
+    while(curr->_parent != NULL) {
+      curr = curr->_parent;
+      path.push(curr->_item.name());
+    }
+
+    while(!path.empty()) {
+      _outputFile << "/" << path.top();
+      path.pop();
+    }
+    _outputFile << endl;
+  }
 }

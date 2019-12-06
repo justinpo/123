@@ -36,14 +36,12 @@ movies2
 movie1
 move1
 cmsc
-sp
 movies
 comsci1
 comsci2
 movies1
 movies2
 cmsc
-sp
 movies
 comsci1
 comsci2
@@ -87,16 +85,16 @@ cmsc142
 using namespace std;
 
 int main(){
-        cout<<"Hello World!\n"<<endl;
-        return 0;
+	cout<<"Hello World!\n"<<endl;
+	return 0;
 }
 #include <iostream>
 
 using namespace std;
 
 int main(){
-        cout<<"Hello World!\n"<<endl;
-        return 0;
+	cout<<"Hello World!\n"<<endl;
+	return 0;
 }
 //this is a test for the append using >>
 hello.cpp
@@ -105,8 +103,8 @@ hello.cpp
 using namespace std;
 
 int main(){
-        cout<<"Hello World!\n"<<endl;
-        return 0;
+	cout<<"Hello World!\n"<<endl;
+	return 0;
 }
 //this is a test for the append using >>
 //this is the result of editing the file using edit
@@ -115,8 +113,8 @@ int main(){
 using namespace std;
 
 int main(){
-        cout<<"Hello Philippines and hello world!\n";
-        return 0;
+	cout<<"Hello Philippines and hello world!\n";
+	return 0;
 }
 hello.cpp
 one.cpp
